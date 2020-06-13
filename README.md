@@ -8,10 +8,10 @@ All Docker Related Exercise
 # Running Spring Boot 3 Projects on Docker
 
 - Creating image through Spring Boot
-   mvn spring-boot:build-image
+   	   mvn spring-boot:build-image
 - Running docker image
  - Link Based Communication
-   docker container run -p 5000:5000 --link=charming_feynman -e RDS_HOSTNAME=charming_feynman book-store-server:0.0.1-SNAPSHOT
+   	   docker container run -p 5000:5000 --link=charming_feynman -e RDS_HOSTNAME=charming_feynman book-store-server:0.0.1-SNAPSHOT
  - Host Based Communication
-   docker container run -p 5000:5000 --network=host book-store-server:0.0.1-SNAPSHOT
+  	    docker container run -p 5000:5000 --network=host book-store-server:0.0.1-SNAPSHOT
 
