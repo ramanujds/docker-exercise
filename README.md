@@ -7,7 +7,7 @@ __What are docker image and docker containers?__
 
 ## Basic Commands
 
-* Version
+### Version
 
 ```bash
 docker -v
@@ -15,25 +15,25 @@ docker -v
 
 ## Docker Images
 
-* List of Images
+### List of Images
 
 ```bash
 docker images
 ```
 
-* List of commands for images
+### List of commands for images
 
 ```bash
 docker images --help
 ```
 
-* Pull an image
+### Pull an image
 
 ```bash
 docker pull ubuntu
 ```
 
-* Filtering images
+### Filtering images
 
 ```bash
 docker images -f "dangling=true"
@@ -41,19 +41,19 @@ docker images -f "dangling=true"
 
 >Dangling images are images which are associated with any containers
 
-* Running an image
+### Running an image
 
 ```bash
 docker run --name MyUbuntu -it ubuntu bash
 ```
 
-* Inspecting an image
+### Inspecting an image
 
 ```bash
 docker inspect ubuntu
 ```
 
-* Remove an Image
+### Remove an Image
 
 ```bash
 docker rmi ubuntu
@@ -61,55 +61,55 @@ docker rmi ubuntu
 
 ## Docker Containers
 
-* Show the list of running containers
+### Show the list of running containers
 
 ```bash
 docker ps
 ```
 
-* Show the list of all containers
+### Show the list of all containers
 
 ```bash
 docker ps -a
 ```
 
-* Start a container
+### Start a container
 
 ```bash
 docker start <container name/id>
 ```
 
-* Stop a container
+### Stop a container
 
 ```bash
 docker stop <container name/id>
 ```
 
-* Pause a container
+### Pause a container
 
 ```bash
 docker pause <container name/id>
 ```
 
-* Resume a container
+### Resume a container
 
 ```bash
 docker unpause <container name/id>
 ```
 
-* Displaying stats
+### Displaying stats
 
 ```bash
 docker stats <container name/id>
 ```
 
-* Remove a container
+### Remove a container
 
 ```bash
 docker rm <container name/id>
 ```
 
-* Get the history of an image
+### Get the history of an image
 
 ```bash
 docker history <image name/id>
