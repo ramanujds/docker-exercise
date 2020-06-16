@@ -120,8 +120,48 @@ docker history <image name/id>
 __What is a dockerfile?__
 
 > A Dockerfile is a simple text file with instruction to build images
+> Automation of docker image creation
 
 ![Dockerfile](https://i2.wp.com/miro.medium.com/max/1273/1*p8k1b2DZTQEW_yf0hYniXw.png?w=810&ssl=1)
+
+__How to create a Dockerfile?__
+
+* Step 1 : Create a file named Dockerfile
+
+* Step 2 : Add instructions in Dockerfile
+
+* Step 3 : Build Dockerfile to create image
+
+* Step 4 : Run image to create container
+
+### Dockerfile example
+
+```bash
+FROM ubuntu
+
+MAINTAINER ramanuj das <ramanujds9@gmail.com> 
+
+RUN  apt-get update
+
+CMD ["echo", "Hello World...! Image Running.."]
+
+```
+
+__How to build image from Dockerfile?__
+
+```bash
+
+docker build -t myUbuntu:1.0 .
+
+#t flag is used for tagging an image
+
+```
+
+__Running the image:__
+
+```bash
+docker run <image id>
+```
 
 ## Docker Volume
 
