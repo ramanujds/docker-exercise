@@ -163,8 +163,73 @@ __Running the image:__
 docker run <image id>
 ```
 
+## Docker Compose
+
+__What is Docker compose?__
+
+* Tool for defining and running musti-container Docker application
+* It uses yaml file to configure application services(docker-compose.yml)
+* Can start all services with a single command
+* Can scale up selected services when required 
+
+## Steps
+
+* Step 1 : Create the docker compose file (docker-compose.yml)
+* Step 2 : Check the validity of the file using command:
+
+```bash
+docker-compose config
+```
+
+* Step 3 : Run docker-compose yml file using command:
+
+```bash
+docker-compose up
+```
+
+* Step 4 : Stop docker-compose using command:
+
+```bash
+docker-compose down
+```
+
+__docker-compose.yml exmaple:__
+
+```yml
+
+version: '3'
+
+services:
+    web:
+        image: nginx
+        ports:
+            - 9090:80
+    database:
+        image: redis
+
+```
+
+__How to use scaling?__
+
+```bash
+docker-compose up -d --scale database=4
+```
+
 ## Docker Volume
 
+> Docker volumes are used for decoupling container from storage
+
+__Command to create a docker volume:__
+
+```bash
+docker volume create myVolume1
+```
+
+__Running jenkins with the volume:__
+
+```bash
+docker run --name myJenkins1 -v myVolume1:/var/jenkins_home -p 9000:8080 -p 50000:50000 jenkins
+```
 
 ## Docker Mysql + SpringBoot
 
