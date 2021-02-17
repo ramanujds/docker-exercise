@@ -1,4 +1,4 @@
-# Docker Exercise
+ Docker Exercise
 
 __What are docker image and docker containers?__
 
@@ -163,6 +163,110 @@ __Running the image:__
 docker run <image id>
 ```
 
+
+## Docker Volume
+
+> Docker volumes are used for decoupling container from storage
+
+__Command to create a docker volume:__
+
+```bash
+docker volume create myVolume1
+```
+
+__Running jenkins with the volume:__
+
+```bash
+docker run --name myJenkins1 -v myVolume1:/var/jenkins_home -p 9000:8080 -p 50000:50000 jenkins
+```
+
+## Docker Mysql + SpringBoot
+
+## How to run MySql on Docker -
+  
+  ```bash
+   docker pull mysql
+   docker run -d -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=mydb -e MYSQL_USER=docker -e MYSQL_PASSWORD=password -p 3308:3306 --name mysql mysql
+  ```
+
+## Running Spring Boot 3 Projects on Docker
+
+* Creating image through Spring Boot -
+  
+  ```bash
+  mvn spring-boot:build-image
+  ```
+
+* Running docker image -
+
+* Link Based Communication -
+  
+  ```bash
+  docker container run -p 5000:5000 -e RDS_HOSTNAME=mysql -e RDS_PORT=3306 --link=mysql --name book-store book-store-server:0.0.1-SNAPSHOT
+  ```
+
+* Host Based Communication -
+  
+```bash
+  docker container run -p 5000:5000 --network=host book-store-server:0.0.1-SNAPSHOT
+```
+
+* Custom Network
+
+  * Creating a Custom Network :
+
+```bash
+docker network create book-store-mysql-network
+```
+
+* Running Mysql Container on that network -
+
+```bash
+docker run -d -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=mydb -e MYSQL_USER=docker -e MYSQL_PASSWORD=password -p 3308:3306 --name mysql --network=book-store-mysql-network mysql
+```
+
+* Running book-store on that network -
+
+```bash
+docker container run -p 5000:5000 -e RDS_HOSTNAME=mysql -e RDS_PORT=3306 --network=book-store-mysql-network -d --name book-store book-store-server:0.0.1-SNAPSHOT
+```
+
+## Using Docker volume to Persist Data - 
+
+```bash
+docker run -d -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=mydb -e MYSQL_USER=docker -e MYSQL_PASSWORD=password -p 3308:3306 --name mysql --volume mysql-db-volume:/var/lib/mysql --network=book-store-mysql-network mysql
+```
+
+
+## Running Angular Application 
+
+__How to run an Angular Application in Docker?__
+
+* Build the Angular App
+
+```bash
+ng build [app-name] --prod=true
+```
+
+* Create a Dockerfile in the root directory
+
+```Dockerfile
+FROM nginx
+COPY dist/[app-name] /usr/share/nginx/html
+```
+
+* Build the image
+
+```bash
+docker build -t [image-name] .
+```
+
+* Run the image
+
+```bash
+docker run -p 80:80  [image-name]
+```
+
 ## Docker Compose
 
 __What is Docker compose?__
@@ -215,78 +319,116 @@ __How to use scaling?__
 docker-compose up -d --scale database=4
 ```
 
-## Docker Volume
+### Running Fullstack Application using Docker-Compose
 
-> Docker volumes are used for decoupling container from storage
+```yml
+version: '3.7'
 
-__Command to create a docker volume:__
+services:
 
-```bash
-docker volume create myVolume1
-```
+  book-store-frontend:
+    image: book-store-client-app 
+    #build:
+      #context: .
+      #dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    restart: always
+    depends_on: # Start the depends_on first
+      - book-store-spring-boot 
+    networks:
+      - book-store-app-network
 
-__Running jenkins with the volume:__
+  book-store-spring-boot:
+    image: book-store-server:0.0.1-SNAPSHOT
+    #build:
+      #context: .
+      #dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    restart: always
+    # depends_on: # Start the depends_on first
+    #   - mysql 
+    environment:
+      RDS_HOSTNAME: mysql
+      RDS_PORT: 3306
+      RDS_DB_NAME: mydb
+      RDS_USERNAME: docker
+      RDS_PASSWORD: password
+    networks:
+      - book-store-app-network
 
-```bash
-docker run --name myJenkins1 -v myVolume1:/var/jenkins_home -p 9000:8080 -p 50000:50000 jenkins
-```
-
-## Docker Mysql + SpringBoot
-
-## How to run MySql on Docker -
+  mysql:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3308:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: mydb
+      MYSQL_ROOT_HOST: 192.168.0.48/255.255.255.248
+    # volumes:
+    #   - mysql-db-volume:/var/lib/mysql
+    networks:
+      - book-store-app-network
+      # network:
+      #   ipv4_address: 172.20.0.2
   
-  ```bash
-   docker pull mysql
-   docker run -d -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=mydb -e MYSQL_USER=docker -e MYSQL_PASSWORD=password -p 3308:3306 --name mysql mysql:5.7
-  ```
+# Volumes
+# volumes: 
+#   mysql-db-volume:
 
-## Running Spring Boot 3 Projects on Docker
+networks:
+  book-store-app-network:
 
-* Creating image through Spring Boot -
-  
-  ```javascript
-  mvn spring-boot:build-image
-  ```
-
-* Running docker image -
-
-* Link Based Communication -
-  
-  ```bash
-  docker container run -p 5000:5000 -e RDS_HOSTNAME=mysql -e RDS_PORT=3306 --link=mysql --name book-store book-store-server:0.0.1-SNAPSHOT
-  ```
-
-* Host Based Communication -
-  
-```bash
-  docker container run -p 5000:5000 --network=host book-store-server:0.0.1-SNAPSHOT
 ```
 
-* Custom Network
+### Some useful Docker Compose Commands
 
-  * Creating a Custom Network :
-
-```bash
-docker network create book-store-mysql-network
-```
-
-* Running Mysql Container on that network -
+* Docker-compose Configuration
 
 ```bash
-docker run -d -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=mydb -e MYSQL_USER=docker -e MYSQL_PASSWORD=password -p 3308:3306 --name mysql 
---network=book-store-mysql-network mysql:5.7
+docker-compose config
 ```
 
-* Running book-store on that network -
+* Docker-Compose Images Used
 
 ```bash
-docker container run -p 5000:5000 -e RDS_HOSTNAME=mysql -e RDS_PORT=3306 --network=book-store-mysql-network -d --name book-store book-store-server:0.0.1-SNAPSHOT
+docker-compose images
 ```
 
-## Using Docker volume to Persist Data - 
+* Docker-Compose Container Used
 
 ```bash
-docker run -d -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=mydb -e MYSQL_USER=docker -e MYSQL_PASSWORD=password -p 3308:3306 --name mysql --volume mysql-db-volume:/var/lib/mysql mysql
+docker-compose ps
 ```
 
-# Running Fullstack Application (Spring Boot + MySql + Angular)
+* Docker-Compose Pause, Resume, Stop, Kill 
+
+```bash
+docker-compose pause
+docker-compose unpause
+docker-compose stop
+docker-compose kill
+
+```
+
+
+* Docker-Compose Events 
+
+```bash
+docker-compose events
+```
+
+
+* Build Images from Dockerfile 
+
+```bash
+docker-compose build
+
+```
+
+# Running Microservices on Docker
