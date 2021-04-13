@@ -1,0 +1,33 @@
+**/__ Bold
+*/_ Italic
+# H1
+### H3
+~~ Strikethrough
+---/___ HR
+\* Escape
+> Quote
+[Instagram])(instagram.com/ramnuj_das_)
+
+Unordered List
+* Item 1
+* Item 2
+  * Sub Item
+
+Ordered List
+1. Item1
+1. Item2
+
+<p>Inline Text Block</p>
+
+![Image](Image Source)
+
+```
+Code Block
+```
+
+```javascript
+
+ javascript code
+
+```
+

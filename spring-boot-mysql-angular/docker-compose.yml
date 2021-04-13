@@ -1,0 +1,62 @@
+version: '3.7'
+
+services:
+
+  book-store-frontend:
+    image: book-store-client-app 
+    #build:
+      #context: frontend/todo-app
+      #dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    restart: always
+    depends_on: # Start the depends_on first
+      - book-store-spring-boot 
+    networks:
+      - book-store-app-network
+
+  book-store-spring-boot:
+    image: book-store-server:0.0.1-SNAPSHOT
+    #build:
+      #context: .
+      #dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    restart: always
+    # depends_on: # Start the depends_on first
+    #   - mysql 
+    environment:
+      RDS_HOSTNAME: mysql
+      RDS_PORT: 3306
+      RDS_DB_NAME: mydb
+      RDS_USERNAME: docker
+      RDS_PASSWORD: password
+    networks:
+      - book-store-app-network
+
+  mysql:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3308:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: mydb
+      MYSQL_ROOT_HOST: 192.168.0.48/255.255.255.248
+    # volumes:
+    #   - mysql-db-volume:/var/lib/mysql
+    #   - ./init:/docker-entrypoint-initdb.d
+    networks:
+      - book-store-app-network
+      # network:
+      #   ipv4_address: 172.20.0.2
+  
+# Volumes
+# volumes: 
+#   mysql-db-volume:
+
+networks:
+  book-store-app-network:

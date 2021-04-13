@@ -1,0 +1,70 @@
+version: '3.7'
+services:
+
+  music-eureka-server:
+    image: music-eureka-server:0.0.1-SNAPSHOT
+    ports:
+      - "8761:8761"
+    restart: always
+    networks:
+      - music-ms-network
+
+  song-service:
+    image: song-info-services:0.0.1-SNAPSHOT
+    ports:
+     -  "8100-8110:8100"
+    restart: always
+    depends_on:
+      -  music-eureka-server
+      -  music-service
+    networks:
+      - music-ms-network
+
+  artist-service:
+    image: artist-info-services:0.0.1-SNAPSHOT
+    ports:
+      - "8200-8220:8200"
+    restart: always
+    depends_on:
+      - music-eureka-server
+      - music-service
+    networks:
+      - music-ms-network
+
+
+  music-service:
+    image: music-info-services:0.0.1-SNAPSHOT
+    ports:
+      - "8000-8020:8000"
+    restart: always
+    depends_on:
+      - music-eureka-server 
+    networks:
+      - music-ms-network
+
+
+  music-api-gateway:
+    image: music-api-gateway:0.0.1-SNAPSHOT
+    ports:
+      - "9411:9411"
+    restart: always
+    depends_on:
+      - music-eureka-server 
+    networks:
+      - music-ms-network
+
+
+# Angular Frontend
+  music-app-client:
+    image: music-app-client
+    ports:
+      - "4200:80"
+    restart: always
+    depends_on:
+      - music-eureka-server 
+    networks:
+      - music-ms-network
+  
+# Networks to be created to facilitate communication between containers
+networks:
+  music-ms-network:
