@@ -271,7 +271,7 @@ docker run -p 80:80  [image-name]
 
 __What is Docker compose?__
 
-* Tool for defining and running musti-container Docker application
+* Tool for defining and running multi-container Docker application
 * It uses yaml file to configure application services(docker-compose.yml)
 * Can start all services with a single command
 * Can scale up selected services when required 
